@@ -62,6 +62,7 @@
                             <button type="submit" class="btn btn-success">
                                 Register
                             </button>
+                            <p class="mt-3 text-center">Do you have already account? <a href="views/login.php">Login here</a></p>
                         </div>
 
                     </form>

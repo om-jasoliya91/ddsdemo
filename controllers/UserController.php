@@ -72,4 +72,16 @@ if ($action === 'login') {
     exit;
 }
 
+    if($action === 'logout'){
+        if(session_status() == PHP_SESSION_NONE){
+            session_start();
+        }
+
+        session_unset();
+        session_destroy();
+
+        echo 'success';
+        exit;
+        }
+    
 echo 'invalid';

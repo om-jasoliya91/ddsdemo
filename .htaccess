@@ -1,0 +1,42 @@
+# Turns URL rewriting ON
+# Without this → all RewriteRule lines are ignored
+RewriteEngine On
+
+# ---------------------------------
+# Disable directory listing Stops Apache from showing folder contents
+# ---------------------------------
+Options -Indexes
+
+# ---------------------------------
+# Allow static assets 
+# ---------------------------------
+RewriteRule ^public/ - [L]
+RewriteRule ^uploads/ - [L]
+RewriteRule ^js/ - [L]
+RewriteRule ^image/ - [L]
+
+# ---------------------------------
+# Clean routes (IMPORTANT)
+# ^ = Match the START of the URL path
+# ---------------------------------
+RewriteRule ^login/?$ views/login.php [L]
+RewriteRule ^register/?$ views/register.php [L]
+RewriteRule ^view/?$ views/view.php [L]
+
+# ---------------------------------
+# Hide .php extension (generic)
+# ---------------------------------
+# So if user requests: /demo/uploads/ =this rule will NOT run
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# A PHP file with the same name exists =  /demo/style.css this rule will NOT run
+RewriteCond %{REQUEST_FILENAME} !-f
+
+# A PHP file with the same name exists = /demo/login = check if exists so run else stop
+RewriteCond %{REQUEST_FILENAME}.php -f
+
+# ^(.+)$ → capture everything in the URL
+# $1 → reuse what was captured
+# append .php
+# [L] → stop rewriting
+RewriteRule ^(.+)$ $1.php [L]
