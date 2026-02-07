@@ -33,6 +33,11 @@
                         </div>
 
                         <div class="mb-3">
+                            <label class="form-label">Password</label>
+                            <input type="password" name="password" class="form-control" placeholder="Enter password">
+                        </div>
+
+                        <div class="mb-3">
                             <label class="form-label">Hobbies</label><br>
                             <div class="form-check form-check-inline">
                                 <input class="form-check-input" type="checkbox" name="hobby[]" value="Cricket">

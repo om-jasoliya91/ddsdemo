@@ -43,4 +43,33 @@ if ($action === 'delete') {
     exit;
 }
 
+if ($action === 'login') {
+    session_start();
+    $email    = trim($_POST['email'] ?? '');
+    $password = trim($_POST['password'] ?? '');
+
+    if (empty($email) || empty($password)) {
+        echo 'Email and Password are required';
+        exit;
+    }
+
+    $user_data = $user->findByEmail($email);
+
+    if (!$user_data) {
+        echo 'Invalid Credentials';
+        exit;
+    }
+
+    if (!password_verify($password, $user_data['password'])) {
+        echo 'Invalid Credentials';
+        exit;
+    }
+
+    $_SESSION['user_id']   = $user_data['id'];
+    $_SESSION['user_name'] = $user_data['name'];
+
+    echo 'success';
+    exit;
+}
+
 echo 'invalid';

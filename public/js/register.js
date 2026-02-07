@@ -24,8 +24,9 @@ $(document).ready(function () {
                         title: 'User Added',
                         timer: 1500,
                         showConfirmButton: false
+                    }).then(()=>{
+                        window.location.href = '/demo/views/login.php';  
                     });
-                    loadUsers();
                 } else {
                     Swal.fire({
                         icon: 'error',
@@ -136,6 +137,49 @@ $(document).on('submit', '#updateForm', function (e) {
         }
     });
 });
+
+$('#loginForm').on('submit', function (e) {
+    e.preventDefault();
+
+    let email = $('#email').val().trim();
+    let password = $('#password').val().trim();
+
+    $.ajax({
+        url: '/demo/controllers/UserController.php',
+        method: 'POST',
+        data: {
+            action: 'login',
+            email: email,
+            password: password
+        },
+        success: function (res) {
+
+            if (res.trim() === 'success') {
+                Swal.fire({
+                    toast: true,
+                    position: 'top-end',
+                    icon: 'success',
+                    title: 'Login Successful',
+                    timer: 2000,
+                    showConfirmButton: false
+                }).then(() => {
+                    window.location.href = '/demo/views/view.php';
+                });
+
+            } else {
+                Swal.fire({
+                    toast: true,
+                    position: 'top-end',
+                    icon: 'error',
+                    title: res,
+                    timer: 2500,
+                    showConfirmButton: false
+                });
+            }
+        }
+    });
+});
+
 
 /* LOAD USERS */
 function loadUsers() {

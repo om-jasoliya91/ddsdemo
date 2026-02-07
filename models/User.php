@@ -10,30 +10,39 @@ class User
     }
 
     public function insert(array $data, array $files): bool
-    {
-        $profile = null;
+{
+    $profile = null;
 
-        if (isset($files['profile']) && $files['profile']['error'] === 0) {
-            $ext = pathinfo($files['profile']['name'], PATHINFO_EXTENSION);
-            $profile = time() . '_' . rand(100, 999) . '.' . $ext;
-            move_uploaded_file(
-                $files['profile']['tmp_name'],
-                BASE_PATH . '/public/uploads/' . $profile
-            );
+    /* PROFILE UPLOAD */
+    if (isset($files['profile']) && $files['profile']['error'] === 0) {
+
+        $allowed = ['jpg', 'jpeg', 'png', 'webp'];
+        $ext = strtolower(pathinfo($files['profile']['name'], PATHINFO_EXTENSION));
+
+        if (!in_array($ext, $allowed)) {
+            return false;
         }
 
-        $name     = mysqli_real_escape_string($this->conn, $data['name']);
-        $email    = mysqli_real_escape_string($this->conn, $data['email']);
-        $password = mysqli_real_escape_string($this->conn, $data['password']);
-        $hobby    = mysqli_real_escape_string($this->conn, $data['hobby']);
+        $profile = time() . '_' . rand(100, 999) . '.' . $ext;
 
-        $sql = "INSERT INTO users (name,email,password,hobby,profile)
-                VALUES ('$name','$email','$password','$hobby','$profile')";
-
-        return mysqli_query($this->conn, $sql);
+        move_uploaded_file(
+            $files['profile']['tmp_name'],
+            BASE_PATH . '/public/uploads/' . $profile
+        );
     }
+    $name  = mysqli_real_escape_string($this->conn, $data['name']);
+    $email = mysqli_real_escape_string($this->conn, $data['email']);
+    $hobby = mysqli_real_escape_string($this->conn, $data['hobby']);
+    $password = $data['password'];
 
-    public function getAll(): array
+    $sql = "INSERT INTO users (name, email, password, hobby, profile)
+            VALUES ('$name', '$email', '$password', '$hobby', '$profile')";
+
+    return mysqli_query($this->conn, $sql);
+}
+
+
+    public function getAll()
     {
         $res = mysqli_query($this->conn, "SELECT * FROM users ORDER BY id DESC");
         return mysqli_fetch_all($res, MYSQLI_ASSOC);
@@ -103,4 +112,16 @@ class User
 
         return mysqli_query($this->conn, "DELETE FROM users WHERE id=$id");
     }
+    public function findByEmail(string $email): ?array
+    {
+        $email = mysqli_real_escape_string($this->conn, $email);
+
+        $res = mysqli_query(
+            $this->conn,
+            "SELECT * FROM users WHERE email='$email' LIMIT 1"
+        );
+
+        return mysqli_fetch_assoc($res) ?: null;
+    }
+
 }
