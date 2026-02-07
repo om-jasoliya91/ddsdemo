@@ -146,14 +146,13 @@ $('#loginForm').on('submit', function (e) {
 
     $.ajax({
         url: '/demo/controllers/UserController.php',
-        method: 'POST',
+        type: 'POST',
         data: {
             action: 'login',
             email: email,
             password: password
         },
         success: function (res) {
-
             if (res.trim() === 'success') {
                 Swal.fire({
                     toast: true,
@@ -181,7 +180,45 @@ $('#loginForm').on('submit', function (e) {
 });
 
 
-/* LOAD USERS */
+$(document).on('click', '#logoutBtn', function (e) {
+    e.preventDefault();
+
+    Swal.fire({
+        title: 'Are you sure?',
+        text: 'You will be logged out!',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, logout'
+    }).then((result) => {
+
+        if (result.isConfirmed) {
+            $.post('/demo/controllers/UserController.php', {
+                action: 'logout'
+            }, function (res) {
+
+                if (res.trim() === 'success') {
+
+                    Swal.fire({
+                        toast: true,
+                        position: 'top-end',
+                        icon: 'success',
+                        title: 'Logout Successful',
+                        showConfirmButton: false,
+                        timer: 2000
+                    });
+
+                    setTimeout(() => {
+                        window.location.href = '/demo/views/login.php';
+                    }, 2000);
+                }
+
+            });
+        }
+
+    });
+});
+
+
 function loadUsers() {
 
     $.post('/demo/controllers/UserController.php', {

@@ -1,5 +1,9 @@
 <?php
+if(session_status() === PHP_SESSION_NONE){
+    session_start();
+}
 require '../config/constant.php';
+require '../config/guest.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -33,6 +37,7 @@ require '../config/constant.php';
                                 <button type="submit" class="btn btn-success">
                                     Login
                                 </button>
+                                <p class="mt-3 text-center">Create new account? <a href="../index.php">Register here</a></p>
                             </div>
                         </form>
                     </div>
